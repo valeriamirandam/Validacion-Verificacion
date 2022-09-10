@@ -25,7 +25,7 @@ while(not(fin)):
             else:
                 indice = 0
                 for i in range(len(pila)):
-                    if len(pila[i]) > len(pila[indice]):
+                    if len(pila[i]) >= len(pila[indice]):
                         indice = i
                 elemento = pila[indice]
                 print(elemento)
@@ -38,7 +38,7 @@ while(not(fin)):
             else:
                 indice = 0
                 for i in range(len(pila)):
-                    if len(pila[i]) < len(pila[indice]):
+                    if len(pila[i]) <= len(pila[indice]):
                         indice = i
                 elemento = pila[indice]
                 print(elemento)
