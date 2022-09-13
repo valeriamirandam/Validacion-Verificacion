@@ -1,9 +1,22 @@
+from distutils.log import error
 import logging
 FORMAT = "%(asctime)s %(levelname)s %(message)s"
 logging.basicConfig(filename="logs.log", filemode="w",format=FORMAT, datefmt="%H:%M:%S",level=logging.DEBUG)
 def menu():
     option = input("*********************************************************************\nMenú principal \n1) Almacenar un texto en la pila. \n2) Visualizar el elemento más largo de la pila. \n3) Visualizar el elemento más corto de la pila. \n4) Imprimir un texto de la pila. \n5) Comparar tamaños de texto. \n6) Sacar un elemento de la pila.\n7) Salir.\nSelecciona una opción:")
     return option
+def chequear(max):
+    try:
+        entrada = input("Indice del elemento a imprimir:")
+        logging.info("Indice seleccionado:"+entrada)
+        indice = int(entrada)
+        if indice not in range(max):
+            raise ValueError
+    except ValueError as e:
+        logging.warning("Se intentó imprimir un texto con un índice no válido.")
+        indice=-1
+    return indice
+        
 fin = False
 pila = []
 while(not(fin)):
@@ -16,7 +29,8 @@ while(not(fin)):
         if option == 1:
             elemento = input("Ingrese el texto a almacenar en la pila:\n")
             pila.append(elemento)
-            logging.info("Se almacenó en la pila el texto: %s",elemento)
+            print("Se almacenó en la pila el texto: '"+elemento+"' que tiene un largo de "+str(len(elemento))+" caracteres")
+            logging.info("Se almacenó en la pila el texto: '%s' que tiene un largo de %d caracteres",elemento,len(elemento))
         elif option == 2:
             largo = len(pila)
             if largo == 0:
@@ -29,7 +43,8 @@ while(not(fin)):
                         indice = i
                 elemento = pila[indice]
                 print(elemento)
-                logging.info("Elemento más largo está en la posición %d y corresponde a: %s",indice,elemento)
+                print("Tiene un largo de "+str(len(elemento))+" caracteres")
+                logging.info("Elemento más largo está en la posición %d y corresponde a: '%s', que tiene un largo de %d caracteres",indice,elemento,len(elemento))
         elif option == 3:
             largo = len(pila)
             if largo == 0:
@@ -42,23 +57,30 @@ while(not(fin)):
                         indice = i
                 elemento = pila[indice]
                 print(elemento)
-                logging.info("Elemento más corto está en la posición %d y corresponde a: %s",indice,elemento)
+                print("Tiene un largo de "+str(len(elemento))+" caracteres")
+                logging.info("Elemento más corto está en la posición %d y corresponde a: '%s', que tiene un largo de %d caracteres",indice,elemento, len(elemento))
         elif option == 4:
             largo = len(pila)
-            print("La pila contiene "+str(largo)+" elementos.")
             if largo == 0:
                 print("La pila se encuentra vacía. Se debe ingresar un elemento antes de solicitar imprimir.")
                 logging.warning("Se intentó imprimir un texto en una pila vacía.")
+            elif largo ==1:
+                print("La pila contiene solo un elemento.")
+                elemento = pila[0]
+                print(elemento)
+                print("Tiene un largo de "+str(len(elemento))+" caracteres")
+                logging.info("Elemento de la posición 0 impreso: '%s', tiene un largo de %d caracteres",elemento, len(elemento))
             else:
+                print("La pila contiene "+str(largo)+" elementos.")
                 print("\nSeleccione una posición entre 0 y "+str(largo-1)+" para ver el elemento de dicha posición.")
-                indice = int(input("Indice del elemento a imprimir:"))
-                if indice >= 0 and indice < largo:
+                indice = chequear(largo)
+                if indice != -1:
                     elemento = pila[indice]
                     print(elemento)
+                    print("Tiene un largo de "+str(len(elemento))+" caracteres")
                     logging.info("Elemento de la posición %d impreso: %s",indice,elemento)
                 else:
-                    print("La posición ingresada no es válida.")
-                    logging.warning("Se intentó imprimir un texto con un índice no válido: %d", indice)
+                     print("La posición ingresada no es válida.")
         elif option == 5:
             largo = len(pila)
             if largo < 2:
@@ -87,11 +109,12 @@ while(not(fin)):
                     else:
                         print("La posición ingresada no es válida.")
                         logging.warning("Se intentó seleccionar un texto con un índice no válido: %d", indice)
-                if len(primer_elemento) > len(segundo_elemento):
-                    print("El primer texto '"+primer_elemento+"' es más largo que el segundo '"+segundo_elemento+"'")
+                diferencia = len(primer_elemento) - len(segundo_elemento)
+                if diferencia > 0:
+                    print("El primer texto '"+primer_elemento+"' es más largo que el segundo '"+segundo_elemento+"' por "+str(diferencia)+" caracteres")
                     logging.info("Elemento 1 '%s' es más largo que elemento 2 '%s'.",primer_elemento,segundo_elemento)
-                elif len(primer_elemento) < len(segundo_elemento):
-                    print("El primer texto '"+primer_elemento+"' es más corto que el segundo '"+segundo_elemento+"'")
+                elif diferencia < 0:
+                    print("El primer texto '"+primer_elemento+"' es más corto que el segundo '"+segundo_elemento+"', por "+str(-1*diferencia)+" caracteres")
                     logging.info("Elemento 1 '%s' es más corto que elemento 2 '%s'.",primer_elemento,segundo_elemento)
                 else:
                     print("Ambos textos '"+ primer_elemento +"' y '"+segundo_elemento+"' son del mismo largo.")
